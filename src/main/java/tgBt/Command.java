@@ -1,6 +1,9 @@
 package tgBt;
 
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import tgBt.exam.ExamCommand;
+import tgBt.lern.LearnCommand;
+import tgBt.question.QuestionSet;
+import tgBt.study.StudyCommand;
 
 public abstract class Command {
     protected QuestionSet questionSet;

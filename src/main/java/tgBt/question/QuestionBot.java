@@ -1,13 +1,16 @@
-package tgBt;
+package tgBt.question;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import tgBt.Command;
+import tgBt.Sender;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class QuestionBot extends TelegramLongPollingBot {
 
@@ -39,12 +42,12 @@ public class QuestionBot extends TelegramLongPollingBot {
                     sender = command.execute(chatId);
                     userSessions.put(chatId, sender);
                     reply = sender.createSendMessage();
-                } else {
-                    reply.setText("Неизвестная команда. Выберите путь:\n" +
-                            "⚔️ /exam - Испытание мудрости (5 вопросов)\n" +
-                            "📖 /study - Саги и предания\n" +
-                            "🧙 /learn - Учение у магов\n" +
-                            "❌ /cancel - Покинуть совет");
+                }
+                else if (text.equals("/start")){
+                    msgHello(reply);
+                }
+                else {
+                    msgHello(reply);
                 }
             } else {
                 // Ответ в рамках сессии
@@ -52,12 +55,7 @@ public class QuestionBot extends TelegramLongPollingBot {
                     sender.onMessageReceived(text);
                     reply = sender.createSendMessage();
                 } else {
-                    // Не команда и не в сессии
-                    reply.setText("Неизвестная команда. Выберите путь:\n" +
-                            "⚔️ /exam - Испытание мудрости (5 вопросов)\n" +
-                            "📖 /study - Саги и предания\n" +
-                            "🧙 /learn - Учение у магов\n" +
-                            "❌ /cancel - Покинуть совет");
+                    msgHello(reply);
                 }
             }
 
@@ -80,7 +78,22 @@ public class QuestionBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "7856207138:AAHuWf8t8KYm1Oc45SvDzYGnAYJvtmicoGE";
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
+            Properties prop = new Properties();
+            prop.load(input);
+            return prop.getProperty("TELEGRAM_BOT_TOKEN");
+        } catch (Exception e) {
+            throw new RuntimeException("Не удалось загрузить токен из config.properties", e);
+        }
+    }
+
+
+
+    private void msgHello(SendMessage reply){
+        reply.setText(
+                        "⚔️ /exam - Испытание мудрости (5 вопросов)\n" +
+                        "📖 /study - Саги и предания\n" +
+                        "🧙 /learn - Учение у магов\n");
     }
 }
 

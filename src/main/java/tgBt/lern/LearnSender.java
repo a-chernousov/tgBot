@@ -1,11 +1,14 @@
-package tgBt;
+package tgBt.lern;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import tgBt.question.Question;
+import tgBt.question.QuestionSet;
+import tgBt.Sender;
 
-public class StudySender extends Sender {
-    public StudySender(long chatId, QuestionSet questionSet) {
+public class LearnSender extends Sender {
+    public LearnSender(long chatId, QuestionSet questionSet) {
         super(chatId);
-        this.stateSession = new StudySession(questionSet);
+        this.stateSession = new LearnSession(questionSet);
     }
 
     @Override
@@ -35,8 +38,7 @@ public class StudySender extends Sender {
                 break;
 
             case CHECK:
-                message.setText("Правильный ответ: " + ((StudySession)stateSession).getCurrentQ().getCorrectAnswer() +
-                        "\nВведите /study для нового вопроса.");
+                message.setText("Неверно! Попробуйте еще раз:");
                 break;
 
             case END:

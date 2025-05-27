@@ -1,4 +1,8 @@
-package tgBt;
+package tgBt.study;
+
+import tgBt.Command;
+import tgBt.Sender;
+import tgBt.question.QuestionSet;
 
 public class StudyCommand extends Command {
     public StudyCommand(QuestionSet questionSet) {
