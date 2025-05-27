@@ -12,7 +12,7 @@ public class ExamSender extends Sender {
 
     @Override
     public void onMessageReceived(String message) {
-        stateSession.check(message);
+        stateSession.check(message); // проверяем ответ и обновляем состояние
     }
 
     @Override
@@ -22,27 +22,28 @@ public class ExamSender extends Sender {
 
         switch (stateSession.getState()) {
             case INIT:
-            case ACTION:
-                Question qt = stateSession.action();
-                if (qt == null) {
+            case ACTION: {
+                Question question = stateSession.action();
+                if (question == null) {
+                    message.setText(stateSession.end());
+                } else {
+                    message.setText(formatQuestion(question));
+                }
+                break;
+            }
+
+            case CHECK: {
+                Question nextQuestion = stateSession.action();
+                if (nextQuestion == null) {
                     message.setText(stateSession.end());
                 } else {
                     StringBuilder sb = new StringBuilder();
-                    sb.append("Вопрос: ").append(qt.getQuestionText()).append("\n\n");
-                    sb.append("Варианты ответов:\n");
-
-                    int i = 1;
-                    for (String option : qt.getOptions()) {
-                        sb.append(i++).append(". ").append(option).append("\n");
-                    }
-
+                    sb.append("Ответ принят. Следующий вопрос:\n\n");
+                    sb.append(formatQuestion(nextQuestion));
                     message.setText(sb.toString());
                 }
                 break;
-
-            case CHECK:
-                message.setText("Ответ принят. Следующий вопрос:");
-                break;
+            }
 
             case END:
                 message.setText(stateSession.end());
@@ -54,5 +55,18 @@ public class ExamSender extends Sender {
         }
 
         return message;
+    }
+
+    private String formatQuestion(Question question) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Вопрос: ").append(question.getQuestionText()).append("\n\n");
+        sb.append("Варианты ответов:\n");
+
+        int i = 1;
+        for (String option : question.getOptions()) {
+            sb.append(i++).append(". ").append(option).append("\n");
+        }
+
+        return sb.toString();
     }
 }
