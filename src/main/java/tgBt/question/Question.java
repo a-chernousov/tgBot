@@ -53,10 +53,25 @@ public class Question {
     }
 
     public boolean isCorrect(String answer) {
+        if (answer == null) return false;
 
-        System.out.println(">> " + answer);
-        System.out.println(">> " + correctAnswers.contains(answer) + "\n -------------------");
-        return correctAnswers.contains(answer);
+        // Нормализуем ввод (регистр + пробелы)
+        String normalizedAnswer = answer.trim().toLowerCase();
+
+        // Проверяем, является ли ответ числом (выбор по индексу)
+        if (normalizedAnswer.matches("\\d+")) {
+            int optionIndex = Integer.parseInt(normalizedAnswer) - 1;
+            if (optionIndex >= 0 && optionIndex < getOptions().size()) {
+                String selectedOption = getOptions().get(optionIndex).trim().toLowerCase();
+                return correctAnswers.stream()
+                        .anyMatch(correct -> correct.trim().toLowerCase().equals(selectedOption));
+            }
+            return false;
+        }
+
+        // Если ответ не число - сравниваем текст напрямую
+        return correctAnswers.stream()
+                .anyMatch(correct -> correct.trim().toLowerCase().equals(normalizedAnswer));
     }
 
     public String getCorrectAnswer() {

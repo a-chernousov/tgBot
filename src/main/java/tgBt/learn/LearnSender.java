@@ -26,7 +26,7 @@ public class LearnSender extends Sender {
             case ACTION:
                 Question qt = stateSession.action();
                 StringBuilder sb = new StringBuilder();
-                sb.append("Вопрос: ").append(qt.getQuestionText()).append("\n\n");
+                sb.append("📚 Вопрос: ").append(qt.getQuestionText()).append("\n\n");
                 sb.append("Варианты ответов:\n");
 
                 int i = 1;
@@ -38,7 +38,9 @@ public class LearnSender extends Sender {
                 break;
 
             case CHECK:
-                message.setText("Неверно! Попробуйте еще раз:");
+                message.setText("❌ Неверно! Правильный ответ: " +
+                        ((LearnSession)stateSession).getCorrectAnswer() +
+                        "\n\nВведите /learn для нового вопроса.");
                 break;
 
             case END:
@@ -46,7 +48,7 @@ public class LearnSender extends Sender {
                 break;
 
             case ERROR:
-                message.setText("Произошла ошибка. Попробуйте снова.");
+                message.setText("⚠ Произошла ошибка. Попробуйте снова.");
                 break;
         }
 
