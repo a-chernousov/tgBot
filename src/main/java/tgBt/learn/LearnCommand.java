@@ -1,4 +1,8 @@
-package tgBt;
+package tgBt.learn;
+
+import tgBt.Command;
+import tgBt.question.QuestionSet;
+import tgBt.Sender;
 
 public class LearnCommand extends Command {
     public LearnCommand(QuestionSet questionSet) {

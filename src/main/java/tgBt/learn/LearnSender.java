@@ -1,11 +1,14 @@
-package tgBt;
+package tgBt.learn;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import tgBt.question.Question;
+import tgBt.question.QuestionSet;
+import tgBt.Sender;
 
-public class StudySender extends Sender {
-    public StudySender(long chatId, QuestionSet questionSet) {
+public class LearnSender extends Sender {
+    public LearnSender(long chatId, QuestionSet questionSet) {
         super(chatId);
-        this.stateSession = new StudySession(questionSet);
+        this.stateSession = new LearnSession(questionSet);
     }
 
     @Override
@@ -23,7 +26,7 @@ public class StudySender extends Sender {
             case ACTION:
                 Question qt = stateSession.action();
                 StringBuilder sb = new StringBuilder();
-                sb.append("Вопрос: ").append(qt.getQuestionText()).append("\n\n");
+                sb.append("📚 Вопрос: ").append(qt.getQuestionText()).append("\n\n");
                 sb.append("Варианты ответов:\n");
 
                 int i = 1;
@@ -35,8 +38,9 @@ public class StudySender extends Sender {
                 break;
 
             case CHECK:
-                message.setText("Правильный ответ: " + ((StudySession)stateSession).getCurrentQ().getCorrectAnswer() +
-                        "\nВведите /study для нового вопроса.");
+                message.setText("❌ Неверно! Правильный ответ: " +
+                        ((LearnSession)stateSession).getCorrectAnswer() +
+                        "\n\nВведите /learn для нового вопроса.");
                 break;
 
             case END:
@@ -44,7 +48,7 @@ public class StudySender extends Sender {
                 break;
 
             case ERROR:
-                message.setText("Произошла ошибка. Попробуйте снова.");
+                message.setText("⚠ Произошла ошибка. Попробуйте снова.");
                 break;
         }
 

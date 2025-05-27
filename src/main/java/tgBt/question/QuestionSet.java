@@ -1,4 +1,4 @@
-package tgBt;
+package tgBt.question;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -12,6 +12,11 @@ public class QuestionSet {
     public QuestionSet() {
         this.questions = new ArrayList<>();
     }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
 
     public void loadFromJson(InputStream inputStream) throws IOException {
         ObjectMapper mapper = new ObjectMapper();

@@ -1,6 +1,9 @@
-package tgBt;
+package tgBt.exam;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import tgBt.question.Question;
+import tgBt.question.QuestionSet;
+import tgBt.Sender;
 
 public class ExamSender extends Sender {
     private static final int EXAM_QUESTIONS = 5;
@@ -46,7 +49,11 @@ public class ExamSender extends Sender {
             }
 
             case END:
-                message.setText(stateSession.end());
+                message.setText(stateSession.end() + "\n\nЧто дальше?\n" +
+                        "/exam — пройти тест заново\n" +
+                        "/help — помощь\n" +
+                        "/cancel — отмена и выход");
+
                 break;
 
             case ERROR:

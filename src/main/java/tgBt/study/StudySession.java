@@ -1,11 +1,15 @@
-package tgBt;
+package tgBt.study;
 
-public class LearnSession implements StateSession {
+import tgBt.StateSession;
+import tgBt.question.Question;
+import tgBt.question.QuestionSet;
+
+public class StudySession implements StateSession {
     private QuestionSet questionSet;
     private State state;
     private Question currentQ;
 
-    public LearnSession(QuestionSet questionSet) {
+    public StudySession(QuestionSet questionSet) {
         this.questionSet = questionSet;
         this.state = State.INIT;
     }
@@ -20,19 +24,22 @@ public class LearnSession implements StateSession {
     @Override
     public boolean check(String answer) {
         boolean isCorrect = currentQ.isCorrect(answer);
-        state = isCorrect ? State.END : State.CHECK;
+        state = State.CHECK;
         return isCorrect;
     }
 
     @Override
     public String end() {
         state = State.END;
-        return "Правильный ответ: " + currentQ.getCorrectAnswer() +
-                "\nВведите /learn для нового вопроса.";
+        return "Режим обучения завершен. Введите /study чтобы начать снова.";
     }
 
     @Override
     public State getState() {
         return state;
+    }
+
+    public Question getCurrentQ() {
+        return currentQ;
     }
 }
