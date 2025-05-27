@@ -47,25 +47,32 @@ public class ExamSession implements StateSession {
 
     @Override
     public boolean check(String answer) {
+        System.out.println("Все варианты: " + currentQ.getOptions());
+        System.out.println("Выбрано: " + answer);
+        System.out.println("Правильные ответы: " + currentQ.getCorrectAnswers());
         boolean isCorrect = false;
 
         try {
-            int optionIndex = Integer.parseInt(answer.trim()) - 1;
-            if (optionIndex >= 0 && optionIndex < currentQ.getOptions().size()) {
-                String selectedOption = currentQ.getOptions().get(optionIndex);
+            int choice = Integer.parseInt(answer.trim()) - 1;
+            List<String> options = currentQ.getOptions();
+
+            if (choice >= 0 && choice < options.size()) {
+                String selectedOption = options.get(choice);
                 isCorrect = currentQ.isCorrect(selectedOption);
+
+                // Увеличиваем счётчик только если ответ правильный!
+                if (isCorrect) {
+                    correctAnswers++;  // <- Вот здесь исправление
+                }
             }
         } catch (NumberFormatException e) {
-            isCorrect = false;
-        }
-
-        if (isCorrect) {
-            correctAnswers++;
+            return false;
         }
 
         state = State.CHECK;
         return isCorrect;
     }
+
 
     @Override
     public String end() {

@@ -1,4 +1,4 @@
-package tgBt.lern;
+package tgBt.learn;
 
 import tgBt.Command;
 import tgBt.question.QuestionSet;

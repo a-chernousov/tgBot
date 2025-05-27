@@ -1,7 +1,7 @@
 package tgBt;
 
 import tgBt.exam.ExamCommand;
-import tgBt.lern.LearnCommand;
+import tgBt.learn.LearnCommand;
 import tgBt.question.QuestionSet;
 import tgBt.study.StudyCommand;
 

@@ -15,6 +15,8 @@ public class Question {
     @JsonProperty("wrong_answers")
     private List<String> wrongAnswers;
 
+    private List<String> cachedOptions;
+
     public Question() {
         // Обязательный конструктор для Jackson
     }
@@ -38,23 +40,22 @@ public class Question {
     }
 
     public List<String> getOptions() {
-        List<String> options = new ArrayList<>();
-
-        // Добавляем до 3 правильных ответов
-        int correctToAdd = Math.min(3, correctAnswers.size());
-        options.addAll(correctAnswers.subList(0, correctToAdd));
-
-        // Добавляем один неправильный (если есть)
-        if (!wrongAnswers.isEmpty()) {
-            options.add(wrongAnswers.get(0));
+        if (cachedOptions == null) {
+            // Генерируем варианты только один раз
+            cachedOptions = new ArrayList<>();
+            if (!correctAnswers.isEmpty()) {
+                cachedOptions.add(correctAnswers.get(0)); // Берём первый правильный
+            }
+            cachedOptions.addAll(wrongAnswers);
+            Collections.shuffle(cachedOptions);
         }
-
-        // Перемешиваем
-        Collections.shuffle(options);
-        return options;
+        return cachedOptions;
     }
 
     public boolean isCorrect(String answer) {
+
+        System.out.println(">> " + answer);
+        System.out.println(">> " + correctAnswers.contains(answer) + "\n -------------------");
         return correctAnswers.contains(answer);
     }
 

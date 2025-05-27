@@ -1,4 +1,4 @@
-package tgBt.lern;
+package tgBt.learn;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import tgBt.question.Question;
