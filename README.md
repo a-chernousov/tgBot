@@ -2,7 +2,8 @@
 @vstuLotr_bot
 
 
-![image](https://github.com/user-attachments/assets/8c41b103-9b12-4278-a8de-b80cb1976087)
+![Uploading image.png…]()
+
 
 ### Описание 
 Программа создана для работы бота в вопросно-обущающей по тематике властелина колец
