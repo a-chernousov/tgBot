@@ -1,12 +1,15 @@
 package tgBt.question;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import tgBt.testUnit.LoggerUtil;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class QuestionSet {
+    private static final Logger logger = LoggerUtil.getLogger();
     private List<Question> questions;
 
     public QuestionSet() {
@@ -22,6 +25,7 @@ public class QuestionSet {
         ObjectMapper mapper = new ObjectMapper();
         questions = mapper.readValue(inputStream,
                 mapper.getTypeFactory().constructCollectionType(List.class, Question.class));
+        logger.info("Загружено " + questions.size() + " вопросов из JSON-файла.");
     }
 
     public void loadFromFile(String filename) throws IOException {
@@ -69,15 +73,15 @@ public class QuestionSet {
                     .getResourceAsStream("lotr_questions.json")) {
 
                 if (inputStream == null) {
+                    logger.severe("Файл lotr_questions.json не найден в ресурсах.");
                     throw new FileNotFoundException("Файл lotr_questions.json не найден в ресурсах.");
                 }
 
                 instance.loadFromJson(inputStream);
-                System.out.println(">>> Вопросы успешно загружены из JSON-файла.");
+                logger.info("Вопросы успешно загружены из JSON-файла.");
 
             } catch (IOException e) {
-                System.err.println(">>> Ошибка загрузки JSON-файла с вопросами:");
-                e.printStackTrace();
+                logger.severe("Ошибка загрузки JSON-файла с вопросами: " + e.getMessage());
             }
         }
         return instance;
