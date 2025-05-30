@@ -36,3 +36,10 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+
+# Логи
+bot_logs.txt
+
+#api token
+src/main/resources/config.properties

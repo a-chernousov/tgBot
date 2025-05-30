@@ -6,14 +6,16 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import tgBt.Command;
 import tgBt.Sender;
+import tgBt.testUnit.LoggerUtil;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class QuestionBot extends TelegramLongPollingBot {
-
+    private static final Logger logger = LoggerUtil.getLogger();
     private final Map<Long, Sender> userSessions = new HashMap<>();
 
     @Override
@@ -24,11 +26,12 @@ public class QuestionBot extends TelegramLongPollingBot {
             String text = update.getMessage().getText();
             reply.setChatId(String.valueOf(chatId));
 
-            System.out.println(">>> Получено сообщение: " + text + " от chatId: " + chatId);
+            logger.info("Получено сообщение: " + text + " от chatId: " + chatId);
 
-            // Загружаем JSON с вопросами (один раз)
+            // Загрузка вопросов
             InputStream inputStream = QuestionSet.class.getClassLoader().getResourceAsStream("lotr_questions.json");
             if (inputStream == null) {
+                logger.severe("Файл lotr_questions.json не найден.");
                 throw new RuntimeException("Файл lotr_questions.json не найден.");
             }
             QuestionSet.getInstance().loadFromJson(inputStream);
@@ -36,38 +39,38 @@ public class QuestionBot extends TelegramLongPollingBot {
             Sender sender = userSessions.get(chatId);
 
             if (text.startsWith("/")) {
-                // Команда
                 Command command = Command.fromText(text);
                 if (command != null) {
                     sender = command.execute(chatId);
                     userSessions.put(chatId, sender);
                     reply = sender.createSendMessage();
-                }
-                else if (text.equals("/start")){
+                    logger.info("Обработана команда: " + text);
+                } else if (text.equals("/start")) {
                     msgHello(reply);
-                }
-                else {
+                    logger.info("Пользователь начал взаимодействие с ботом.");
+                } else {
                     msgHello(reply);
+                    logger.warning("Неизвестная команда: " + text);
                 }
             } else {
-                // Ответ в рамках сессии
                 if (sender != null) {
                     sender.onMessageReceived(text);
                     reply = sender.createSendMessage();
+                    logger.info("Обработан ответ пользователя: " + text);
                 } else {
                     msgHello(reply);
+                    logger.warning("Пользователь отправил сообщение вне сессии: " + text);
                 }
             }
-
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.severe("Ошибка при обработке сообщения: " + e.getMessage());
             reply.setText("Что-то пошло не так в Средиземье... Попробуйте позже.");
         }
 
         try {
             execute(reply);
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            logger.severe("Ошибка при отправке сообщения: " + e.getMessage());
         }
     }
 

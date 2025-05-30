@@ -3,12 +3,15 @@ package tgBt.exam;
 import tgBt.question.Question;
 import tgBt.question.QuestionSet;
 import tgBt.StateSession;
+import tgBt.testUnit.LoggerUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 public class ExamSession implements StateSession {
+    private static final Logger logger = LoggerUtil.getLogger();
     private QuestionSet questionSet;
     private int totalQuestions;
     private int currentQuestion;
@@ -47,11 +50,9 @@ public class ExamSession implements StateSession {
 
     @Override
     public boolean check(String answer) {
-        System.out.println("Все варианты: " + currentQ.getOptions());
-        System.out.println("Выбрано: " + answer);
-        System.out.println("Правильные ответы: " + currentQ.getCorrectAnswers());
-        boolean isCorrect = false;
+        logger.info("Проверка ответа: " + answer + " для вопроса: " + currentQ.getQuestionText());
 
+        boolean isCorrect = false;
         try {
             int choice = Integer.parseInt(answer.trim()) - 1;
             List<String> options = currentQ.getOptions();
@@ -60,12 +61,15 @@ public class ExamSession implements StateSession {
                 String selectedOption = options.get(choice);
                 isCorrect = currentQ.isCorrect(selectedOption);
 
-                // Увеличиваем счётчик только если ответ правильный!
                 if (isCorrect) {
-                    correctAnswers++;  // <- Вот здесь исправление
+                    correctAnswers++;
+                    logger.info("Ответ правильный. Текущий счёт: " + correctAnswers + "/" + totalQuestions);
+                } else {
+                    logger.info("Ответ неправильный. Правильный ответ: " + currentQ.getCorrectAnswers());
                 }
             }
         } catch (NumberFormatException e) {
+            logger.warning("Некорректный формат ответа: " + answer);
             return false;
         }
 
@@ -73,9 +77,9 @@ public class ExamSession implements StateSession {
         return isCorrect;
     }
 
-
     @Override
     public String end() {
+        logger.info("Экзамен завершён. Результат: " + correctAnswers + "/" + totalQuestions);
         state = State.END;
         return String.format(
                 "Экзамен завершен!\nПравильных ответов: %d из %d (%.1f%%)\n\nВведите /start для возврата в главное меню.",
